@@ -7,11 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		45974EBE2684562600975045 /* SignInModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45974EBD2684562600975045 /* SignInModels.swift */; };
+		45974EC0268469C000975045 /* AnAuthChangeNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45974EBF268469C000975045 /* AnAuthChangeNotification.swift */; };
+		45974EC226846A6900975045 /* SignInWrappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45974EC126846A6900975045 /* SignInWrappable.swift */; };
+		45974EC426846E9900975045 /* ANAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45974EC326846E9900975045 /* ANAuthService.swift */; };
 		45AEF34E26833352006339BE /* SocialLogin.h in Headers */ = {isa = PBXBuildFile; fileRef = 45AEF34C26833352006339BE /* SocialLogin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		45AEF35726833395006339BE /* Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AEF35626833395006339BE /* Validator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		45974EBD2684562600975045 /* SignInModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInModels.swift; sourceTree = "<group>"; };
+		45974EBF268469C000975045 /* AnAuthChangeNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnAuthChangeNotification.swift; sourceTree = "<group>"; };
+		45974EC126846A6900975045 /* SignInWrappable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInWrappable.swift; sourceTree = "<group>"; };
+		45974EC326846E9900975045 /* ANAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ANAuthService.swift; sourceTree = "<group>"; };
 		45AEF34926833352006339BE /* SocialLogin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SocialLogin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		45AEF34C26833352006339BE /* SocialLogin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocialLogin.h; sourceTree = "<group>"; };
 		45AEF34D26833352006339BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -29,6 +37,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		45974EBC2684546300975045 /* LoginServices */ = {
+			isa = PBXGroup;
+			children = (
+				45974EBD2684562600975045 /* SignInModels.swift */,
+				45974EBF268469C000975045 /* AnAuthChangeNotification.swift */,
+				45974EC126846A6900975045 /* SignInWrappable.swift */,
+				45974EC326846E9900975045 /* ANAuthService.swift */,
+			);
+			path = LoginServices;
+			sourceTree = "<group>";
+		};
 		45AEF33F26833352006339BE = {
 			isa = PBXGroup;
 			children = (
@@ -48,6 +67,7 @@
 		45AEF34B26833352006339BE /* SocialLogin */ = {
 			isa = PBXGroup;
 			children = (
+				45974EBC2684546300975045 /* LoginServices */,
 				45AEF35526833373006339BE /* TestGroup */,
 				45AEF34C26833352006339BE /* SocialLogin.h */,
 				45AEF34D26833352006339BE /* Info.plist */,
@@ -142,7 +162,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45974EC0268469C000975045 /* AnAuthChangeNotification.swift in Sources */,
 				45AEF35726833395006339BE /* Validator.swift in Sources */,
+				45974EC226846A6900975045 /* SignInWrappable.swift in Sources */,
+				45974EBE2684562600975045 /* SignInModels.swift in Sources */,
+				45974EC426846E9900975045 /* ANAuthService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
