@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-//import KeychainAccess
+import KeychainAccess
 
 
 /// Auth service setup config

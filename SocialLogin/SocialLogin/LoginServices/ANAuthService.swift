@@ -7,8 +7,9 @@
 
 import Foundation
 import UIKit
-//import KeychainAccess
+import KeychainAccess
 
+@available(iOS 13.0, *)
 public class ANAuthService : NSObject , SignInWrappable {
     
     public var typeOfSignInMethod: ANSignInType {
@@ -257,6 +258,7 @@ public class ANAuthService : NSObject , SignInWrappable {
     }
 }
 
+@available(iOS 13.0, *)
 extension ANAuthService: SignUpWrappable {
     
     public func signUpWith(parameter: [String: Any], handler: @escaping (Result<ANUserAuth,Error>) -> ()) {
@@ -266,6 +268,7 @@ extension ANAuthService: SignUpWrappable {
     
 }
 
+@available(iOS 13.0, *)
 extension ANAuthService {
     
     func loginWith(type: ANSignInType ,token: ANUserAuth, handler: @escaping (Result<ANUserAuth, Error>) -> ()) {
