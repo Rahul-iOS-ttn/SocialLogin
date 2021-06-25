@@ -22,7 +22,7 @@ public class ANAuthService : NSObject , SignInWrappable {
     
     /// shared singleton object for ANAuthService
     @objc public static var shared: ANAuthService = {
-       let instance = ANAuthService()
+        let instance = ANAuthService()
         instance.getCurrentSignInBy()
         return instance
     }()
@@ -69,22 +69,6 @@ public class ANAuthService : NSObject , SignInWrappable {
                 self.currentSignInBy = currentSignInBy
                 currentSignType = currentSignInBy.typeOfSignInMethod
             }
-            
-            
-            /*
-            switch loginBy {
-            case ANSignInType.google.signInTypeKey:
-                currentSignInBy = signInWrappables.filter({ $0.typeOfSignInMethod.signInTypeKey == loginBy}).first
-                currentSignType = .google
-            case ANSignInType.facebook.signInTypeKey:
-                currentSignInBy = signInWrappables.filter({ $0 is FBSignInWrapper}).first
-                currentSignType = .facebook
-            case ANSignInType.apple.signInTypeKey:
-                currentSignInBy = signInWrappables.filter({ $0 is AppleSignInWrapper}).first
-                currentSignType = .apple
-            default:
-                break
-            }*/
         }
     }
     
@@ -118,27 +102,6 @@ public class ANAuthService : NSObject , SignInWrappable {
             self.currentSignInBy = currentSignInBy
             currentSignType = currentSignInBy.typeOfSignInMethod
         }
-        
-        /*
-        for typeObj in signInWrappables {
-            
-            switch type {
-                
-            case .facebook where typeObj.typeOfSignInMethod == type:
-                currentSignInBy = typeObj
-            case .twitter:
-                break
-            case .apple where typeObj is AppleSignInWrapper:
-                currentSignInBy = typeObj
-            case .google where typeObj is GoogleSignInWrapper:
-                currentSignInBy = typeObj
-            case .manual(_, _):
-                break
-            default:
-                break
-            }
-            
-        }*/
         
         currentSignInBy?.signIn(with: type, fromView: fromView) { (result) in
             print("result is \(result)")
@@ -195,7 +158,6 @@ public class ANAuthService : NSObject , SignInWrappable {
             
             switch result{
             case .success(_):
-                //self?.loginWith(type: loginType, token: successObj, handler: handler)
                 UserDefaults.standard.set(loginType.signInTypeKey, forKey: "ANAuthLogin")
                 handler(result)
             case .failure:
@@ -206,25 +168,6 @@ public class ANAuthService : NSObject , SignInWrappable {
     }
     
     public func restoreUserSessionExplicit(with type: ANSignInType, completion handler: @escaping (Result<ANUserAuth, Error>) -> ()) {
-        
-        /*
-        var signInBy: SignInWrappable?
-        switch type {
-        case .google:
-             signInBy = signInWrappables.filter({ $0 is GoogleSignInWrapper}).first
-            
-        case .facebook:
-            signInBy = signInWrappables.filter({ $0 is FBSignInWrapper}).first
-            
-        case .apple:
-            signInBy = signInWrappables.filter({ $0 is AppleSignInWrapper}).first
-            
-        case .manual(let username, let password):
-            break
-            
-        default:
-            break
-        }*/
         
         if let signInBy = signInWrappables.filter({ $0.typeOfSignInMethod == type}).first {
             
@@ -296,23 +239,5 @@ extension ANAuthService {
             
         }
         
-        
-        /*
-         
-        guard let request = signInRequest else { return }
-        AppContext.sharedContext.requestExecutor.executeRequest(request, completion: { (response, error) in
-            if let responseObj = response {
-                
-                UserDefaults.standard.set(type.signInTypeKey, forKey: "ANAuthLogin")
-                handler(.success(responseObj))
-            }else {
-                handler(.failure(error ?? MLQSignInError.signInFailed(nil)))
-            }
-        })*/
-        
     }
-    
-    
-    
-    
 }
