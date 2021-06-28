@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-//import KeychainAccess
+import KeychainAccess
 
 @available(iOS 13.0, *)
 public class ANAuthService : NSObject , SignInWrappable {
@@ -28,9 +28,9 @@ public class ANAuthService : NSObject , SignInWrappable {
     }()
     
     /// Keychain for ANAuthService
-//    private lazy var keychain: Keychain = {
-//        return Keychain(service: keychainServiceName).synchronizable(true)
-//    }()
+    private lazy var keychain: Keychain = {
+        return Keychain(service: keychainServiceName).synchronizable(true)
+    }()
     
     /// keychainServiceName
     private var keychainServiceName: String = ".ANAuthLogin"

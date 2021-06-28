@@ -12,21 +12,27 @@ import KeychainAccess
 
 /// Auth service setup config
 public struct ANAuthServiceSetupConfig {
-    var application : UIApplication?
-    var loginOptions : [UIApplication.LaunchOptionsKey: Any]?
-    var googleClientId: String?
-    var keychainServiceName: String
+    public var application : UIApplication?
+    public var loginOptions : [UIApplication.LaunchOptionsKey: Any]?
+    public var googleClientId: String?
+    public var keychainServiceName: String
+    public init(application: UIApplication?, loginOptions: [UIApplication.LaunchOptionsKey: Any]?, googleClientId: String?, keychainServiceName: String) {
+        self.application = application
+        self.loginOptions = loginOptions
+        self.googleClientId = googleClientId
+        self.keychainServiceName = keychainServiceName
+    }
 }
 
 /// ANSignInType has some pre define sign in type whose wrapper are already included. create an extension on the ANSignInType to addd more type to it and add its implented wrapper to ANSignInWrapper class.
 public struct ANSignInType {
     
-    static let facebook: ANSignInType = ANSignInType(signInTypeKey: "facebookLogin")
-    static let google: ANSignInType = ANSignInType(signInTypeKey: "googleLogin")
-    static let apple: ANSignInType = ANSignInType(signInTypeKey: "appleLogin")
-    static let manual: ANSignInType = ANSignInType(signInTypeKey: "manualLogin")
-    static let none: ANSignInType = ANSignInType(signInTypeKey: "none")
-    static let twitter: ANSignInType = ANSignInType(signInTypeKey: "twitterLogin")
+    public static let facebook: ANSignInType = ANSignInType(signInTypeKey: "facebookLogin")
+    public static let google: ANSignInType = ANSignInType(signInTypeKey: "googleLogin")
+    public static let apple: ANSignInType = ANSignInType(signInTypeKey: "appleLogin")
+    public static let manual: ANSignInType = ANSignInType(signInTypeKey: "manualLogin")
+    public static let none: ANSignInType = ANSignInType(signInTypeKey: "none")
+    public static let twitter: ANSignInType = ANSignInType(signInTypeKey: "twitterLogin")
     
     
     let signInTypeKey : String
@@ -103,7 +109,7 @@ public protocol SignInWrappable {
     
     /// Handles the open urll
     /// - Parameters:
-    ///   - app: Appliaction
+    ///   - app: Application
     ///   - url: url to handle
     ///   - options: launch options
     func handle(_ app: UIApplication?, open url: URL?, options: [UIApplication.OpenURLOptionsKey : Any]?) -> Bool
