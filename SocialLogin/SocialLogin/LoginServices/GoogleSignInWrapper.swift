@@ -8,26 +8,47 @@
 import Foundation
 import GoogleSignIn
 
-
+/// Google SignIn Error
 enum GSignInError: LocalizedError {
-    case error(code: Int, error: Error)
+    case canceled
+    case hasNoAuthInKeychain
+    case keychainReadWrite
+    case unknown
+    case unknownDefault(Error?)
     
     var errorDescription: String? {
         switch self {
-        case .error(let code, let error):
-            switch code {
-            case GIDSignInErrorCode.unknown.rawValue:
-                fallthrough
-            case GIDSignInErrorCode.canceled.rawValue:
-                return "Google Sign In request is cancelled"
-            case GIDSignInErrorCode.hasNoAuthInKeychain.rawValue, GIDSignInErrorCode.keychain.rawValue:
-                return "SignIn can not be performed due to no valid auth tokens can be read from keychain"
-            default:
-                return error.localizedDescription
-            }
-        default:
-            break
+        case .canceled:
+            return "Sign In request is cancelled"
+        case .hasNoAuthInKeychain:
+            return "Sign In can not be performed due to no valid auth tokens can be read from keychain"
+        case .keychainReadWrite:
+            return "Sign In can not be performed due to issue with reading or writing to the application keychain"
+        case .unknown:
+            return "Some error has occurred, Please try again."
+        case .unknownDefault:
+            return localizedDescription
         }
+    }
+    
+    static func parseError(error: Error) -> Error {
+        
+        let error = error as NSError
+        
+        switch error.code {
+        
+        case GIDSignInErrorCode.unknown.rawValue:
+            return GSignInError.unknown
+        case GIDSignInErrorCode.canceled.rawValue:
+            return GSignInError.canceled
+        case GIDSignInErrorCode.hasNoAuthInKeychain.rawValue:
+            return GSignInError.hasNoAuthInKeychain
+        case GIDSignInErrorCode.keychain.rawValue:
+            return GSignInError.keychainReadWrite
+        default:
+            return GSignInError.unknownDefault(error)
+        }
+        
     }
 }
 
@@ -110,8 +131,7 @@ class GoogleSignInWrapper : NSObject ,SignInWrappable, GIDSignInDelegate {
     }
     
     func addSignInWrapper(_ wrapper: SignInWrappable) {}
-    
-    func addSignUpWrapper(_ wrapper: SignUpWrappable) {}
+    func disableSignInType(_ signInType: ANSignInType) {}
     
     func signIn(with type: ANSignInType, fromView: UIViewController?, handler: @escaping (Result<ANUserAuth, Error>) -> ()) {
         
@@ -156,7 +176,7 @@ class GoogleSignInWrapper : NSObject ,SignInWrappable, GIDSignInDelegate {
     // [START signin_handler]
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
         if let error = error {
-            signInHandler?(.failure(ANSignInError.signInFailed(GSignInError.error(code: (error as NSError).code, error: error))))
+            signInHandler?(.failure(GSignInError.parseError(error: error)))
             
             return
         }

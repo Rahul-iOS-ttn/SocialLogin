@@ -109,33 +109,50 @@ extension ASAuthorizationAppleIDCredential: ANUserAuth, ANUser {
 /// Apple SignIn Error
 @available(iOS 13.0, *)
 enum AppleSignInError: LocalizedError {
-    case appleError(error: Error)
+    case canceled
+    case failed
+    case invalidResponse
+    case notHandled
+    case unknown
+    case unknownDefault(Error?)
     
     var errorDescription: String? {
         switch self {
-        case .appleError(let error):
-            if let error = error as? ASAuthorizationError {
-            
-                switch error.code {
-                case .canceled:
-                    return "Sign In request is cancelled"
-                case .failed:
-                    return "Apple Sign In authorization failed"
-                case .invalidResponse:
-                    return "Apple Sign In can not be performed due to no valid auth tokens"
-                case .notHandled:
-                    return "Apple Sign In authorization failed"
-                case .unknown:
-                    return "It seems you are'nt login with your Apple ID on the device"
-                @unknown default:
-                    return error.localizedDescription
-                }
-            }else {
-                return error.localizedDescription
+        case .canceled:
+            return "Sign In request is cancelled"
+        case .failed:
+            return "Apple Sign In authorization failed"
+        case .invalidResponse:
+            return "Apple Sign In can not be performed due to no valid auth tokens"
+        case .notHandled:
+            return "Apple Sign In authorization failed"
+        case .unknown:
+            return "It seems you are'nt login with your Apple ID on the device"
+        case .unknownDefault:
+            return localizedDescription
+        }
+    }
+    
+    static func parseError(error: Error) -> Error {
+        
+        if let error = error as? ASAuthorizationError {
+        
+            switch error.code {
+            case .canceled:
+                return AppleSignInError.canceled
+            case .failed:
+                return AppleSignInError.failed
+            case .invalidResponse:
+                return AppleSignInError.invalidResponse
+            case .notHandled:
+                return AppleSignInError.notHandled
+            case .unknown:
+                return AppleSignInError.unknown
+            @unknown default:
+                return AppleSignInError.unknownDefault(error)
             }
-            
-        @unknown default:
-            break
+        }else {
+            return AppleSignInError.unknownDefault(error)
         }
     }
 }
@@ -158,7 +175,7 @@ class AppleSignInWrapper: NSObject, SignInWrappable {
     
     private var signInHandler : ((Result<ANUserAuth, Error>) -> ())?
     private var keychainServiceName: String = ".ANAuthLogin"
-    private var contextView: UIViewController!
+    private weak var contextView: UIViewController!
     private var appleIDCredential: ANAuthUser?
     private var applePasswordCredential: ANAuthUser?
     
@@ -173,17 +190,28 @@ class AppleSignInWrapper: NSObject, SignInWrappable {
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         appleIDProvider.getCredentialState(forUserID: appleId) { (credentialState, error) in
             switch credentialState {
-            
             case .authorized:
                  // The Apple ID credential is valid.
-                print("Current Thread - \(Thread.isMainThread)")
-                handler(true)
+                if Thread.isMainThread {
+                    handler(true)
+                }else {
+                    DispatchQueue.main.async {
+                        handler(true)
+                    }
+                }
+                
             case .revoked, .notFound:
                 // The Apple ID credential is either revoked or was not found, so show the sign-in UI.
-                print("Current Thread - \(Thread.isMainThread)")
-                handler(false)
+                
+                
+                if Thread.isMainThread {
+                    handler(false)
+                }else {
+                    DispatchQueue.main.async {
+                        handler(false)
+                    }
+                }
             default:
-                print("Current Thread - \(Thread.isMainThread)")
                 break
             }
         }
@@ -199,8 +227,7 @@ class AppleSignInWrapper: NSObject, SignInWrappable {
     }
     
     func addSignInWrapper(_ wrapper: SignInWrappable) {}
-    
-    func addSignUpWrapper(_ wrapper: SignUpWrappable) {}
+    func disableSignInType(_ signInType: ANSignInType) {}
     
     func signIn(with type: ANSignInType, fromView: UIViewController?, handler: @escaping (Result<ANUserAuth, Error>) -> ()) {
         
@@ -228,6 +255,7 @@ class AppleSignInWrapper: NSObject, SignInWrappable {
         appleIDCredential = nil
         applePasswordCredential = nil
         unobserveAppleIdRevokedNotification()
+        contextView = nil
         handler(.success(true))
         
     }
@@ -236,7 +264,6 @@ class AppleSignInWrapper: NSObject, SignInWrappable {
         
         keychain["username"] = nil
         keychain["password"] = nil
-        
         signOut(handler: {_ in })
     }
     
@@ -277,7 +304,7 @@ class AppleSignInWrapper: NSObject, SignInWrappable {
         if let email = credential.email {
             keychain["email"] = email
         }
-        if let name = credential.profileName {
+        if let name = credential.profileName, !name.isEmpty {
             keychain["name"] = name
         }
         
@@ -325,6 +352,7 @@ extension AppleSignInWrapper: ASAuthorizationControllerDelegate {
             saveAppleIdCredential(credential: authorizedAppleIdCredential)
             observeAppleIdRevokedNotification()
             signInHandler?(.success(appleIdCredentialCustomObj))
+            signInHandler = nil
             
            /*
           if let _ = authorizedAppleIdCredential.email {
@@ -344,6 +372,7 @@ extension AppleSignInWrapper: ASAuthorizationControllerDelegate {
             appleIDCredential = nil
             savePasswordCredential(credential: passwordCredential)
             signInHandler?(.success(applePasswordCredentialCustomObj))
+            signInHandler = nil
             
           break
           
@@ -354,7 +383,8 @@ extension AppleSignInWrapper: ASAuthorizationControllerDelegate {
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
         
-        signInHandler?(.failure(AppleSignInError.appleError(error: error)))
+        signInHandler?(.failure(AppleSignInError.parseError(error: error)))
+        signInHandler = nil
         
     }
 }

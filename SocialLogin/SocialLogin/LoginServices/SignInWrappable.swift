@@ -95,9 +95,9 @@ public protocol SignInWrappable {
     /// - Parameter wrapper: a custom type confirming to SignInWrappable
     func addSignInWrapper(_ wrapper: SignInWrappable)
     
-    /// Add a custom Sign up Type
-    /// - Parameter wrapper: a custom type confirming to SignUpWrappable
-    func addSignUpWrapper(_ wrapper: SignUpWrappable)
+    /// Call this funcction to disable the signIn type, But for reenabling a type will require to create SignInWrapper type , add using addSignInWrapper and call its setup.
+    /// - Parameter signInType: ANSignInType to disable
+    func disableSignInType(_ signInType: ANSignInType)
     
     /// Check and execute the handler if user has logged in previously using this sign in type
     /// - Parameter handler: handler to execute
@@ -144,6 +144,12 @@ public protocol SignInWrappable {
 
 /// Confirm to this protocol adding a type to with Sign Up
 public protocol SignUpWrappable {
+    
+    
+    /// Add a custom Sign up Type
+    /// - Parameter wrapper: a custom type confirming to SignUpWrappable
+    func addSignUpWrapper(_ wrapper: AuthWrappable)
+    
     func signUpWith(parameter: [String: Any], handler: @escaping (Result<ANUserAuth,Error>) -> ())
 }
 

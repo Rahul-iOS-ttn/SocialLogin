@@ -81,16 +81,6 @@ extension Profile : ANUser {
 
 class FBSignInWrapper : SignInWrappable {
     
-    
-    func addSignInWrapper(_ wrapper: SignInWrappable) {
-        
-    }
-    
-    func addSignUpWrapper(_ wrapper: SignUpWrappable) {
-        
-    }
-    
-    
     public var typeOfSignInMethod: ANSignInType {
         .facebook
     }
@@ -113,6 +103,9 @@ class FBSignInWrapper : SignInWrappable {
         handler(hasPreviousSignIn)
     }
     
+    func addSignInWrapper(_ wrapper: SignInWrappable) {}
+    func disableSignInType(_ signInType: ANSignInType) {}
+    
     func setUpLoginService(setUpConfig: ANAuthServiceSetupConfig?) throws {
         
         guard let app = setUpConfig?.application else { throw ANSignInError.setupError(type: ANSignInType.facebook) }
@@ -126,10 +119,10 @@ class FBSignInWrapper : SignInWrappable {
         
         
         loginManager.logIn(permissions: [Permission.publicProfile.name,Permission.email.name], from: fromView) { result, error in
-          
+            
             if let fbError = error {
                 handler(.failure(ANSignInError.signInFailed(fbError)))
-    
+                
             }else if let fbResult = result {
                 
                 if fbResult.isCancelled {
@@ -186,16 +179,16 @@ class FBSignInWrapper : SignInWrappable {
     }
     
     private func getCurrentUser(handler: @escaping (Result<ANUserAuth, Error>) -> ()) {
-       /* Profile.loadCurrentProfile { (profile, error) in
-            
-            if let errorLc = error  {
-                handler(.failure(errorLc))
-            }else if let token = AccessToken.current {
-                handler(.success(token))
-            }else {
-                handler(.failure(FBSignInError.profileFetchError))
-            }
-        }*/
+        /* Profile.loadCurrentProfile { (profile, error) in
+         
+         if let errorLc = error  {
+         handler(.failure(errorLc))
+         }else if let token = AccessToken.current {
+         handler(.success(token))
+         }else {
+         handler(.failure(FBSignInError.profileFetchError))
+         }
+         }*/
         
         GraphRequest(graphPath: "me", parameters: ["fields":"id, email, name, picture.width(480).height(480)"]).start { connecction, result, error in
             Profile.current = Profile(userID: "ddas", firstName: "dasda", middleName: "dsada", lastName: "dasda", name: "dasda", linkURL: nil, refreshDate: nil)
@@ -212,3 +205,4 @@ class FBSignInWrapper : SignInWrappable {
     }
     
 }
+

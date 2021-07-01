@@ -8,11 +8,12 @@
 import Foundation
 
 
-/// User Authentication model
+
+/// Auth user model
 public struct ANAuthUser: ANUserAuth {
     
     static let none = ANAuthUser(authToken: nil, authTokenSecret: nil, passwordCredentials: nil, typeOfSignInMethod: .none)
-
+    
     public var authToken: String?
     public var authTokenSecret: String?
     public var passwordCredentials: ANPasswordCredential?
@@ -45,7 +46,7 @@ public enum ANSignInError: LocalizedError {
             return err
         case .signInTypeUnavailable:
             return nil
-        
+            
         }
     }
     
@@ -64,7 +65,7 @@ public enum ANSignInError: LocalizedError {
             default:
                 return "Other SDK setup failed"
             }
-        
+            
         case .signInTypeUnavailable(let type):
             switch type {
             case .google:

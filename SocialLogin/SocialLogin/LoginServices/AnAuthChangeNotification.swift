@@ -27,7 +27,7 @@ public extension CredentialRevokedObservable {
     
     func observeCredential() {
         
-       observerToken = NotificationCenter.default.addObserver(forName: NSNotification.Name.ANCredentialRevoked, object: nil, queue: nil) { [weak self] _ in
+        observerToken = NotificationCenter.default.addObserver(forName: NSNotification.Name.ANCredentialRevoked, object: nil, queue: nil) { [weak self] someObj in
             self?.credentialRevoked()
         }
         
@@ -43,3 +43,4 @@ public extension CredentialRevokedObservable {
         
     }
 }
+
